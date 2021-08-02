@@ -48,6 +48,20 @@ tshirtDesign.addEventListener('change', e => {
 /**
  * Register for Activities Section
  */
+/**
+ * Add Accessibility to Checkboxes
+ */
+ const checkboxes = document.querySelectorAll('input[type="checkbox"');
+ for (let i = 0; i < checkboxes.length; i++) {
+     checkboxes[i].addEventListener('focus', e => {
+         const label = e.target.parentNode;
+         label.classList.add('focus');
+     })
+     checkboxes[i].addEventListener('blur', e => {
+         const label = e.target.parentNode;
+         label.classList.remove('focus');
+     })
+ }
 // Listen for changes in checkboxes and updates total dynamically
 const registerActivities = document.getElementById('activities');
 const printedTotal = document.getElementById('activities-cost');
@@ -63,24 +77,17 @@ registerActivities.addEventListener('change', e => {
     } else {
         totalCost -= dataCost;
     }
+    // for (let i = 0; checkboxes.length; i++) {
+    //     const dataTime = e.target.getAttribute('data-day-and-time');
+    //     if (dataTime === checkboxes[i].getAttribute('data-day-and-time')) {
+    //         checkboxes[i].classList.add('disabled');
+    //     } else {
+    //         checkboxes[i].classList.remove('disabled');
+    //     }
+    // }
     printedTotal.innerHTML = `Total: $${totalCost}`;
 
 });
-
-/**
- * Add Accessibility to Checkboxes
- */
-const checkboxes = document.querySelectorAll('input[type="checkbox"');
-for (let i = 0; i < checkboxes.length; i++) {
-    checkboxes[i].addEventListener('focus', e => {
-        const label = e.target.parentNode;
-        label.classList.add('focus');
-    })
-    checkboxes[i].addEventListener('blur', e => {
-        const label = e.target.parentNode;
-        label.classList.remove('focus');
-    })
-}
 
 /**
  * Payment Info Section
@@ -114,14 +121,13 @@ paymentMethod.addEventListener('change', e => {
 /**
  * Form Validations
  */
-//  const nameField = document.getElementById('name');
 const emailField = document.getElementById('email');
-// const registerActivities = document.getElementById('activities');
 const ccNumber = document.getElementById('cc-num');
 const zipCode = document.getElementById('zip');
 const ccCVV = document.getElementById('cvv');
 const formElement = document.querySelector('form');
 
+// Field Validators
 const nameValidator = () => {
     const nameInput = nameField.value;
     return /^[a-zA-Z]+\s?[a-zA-z]+?\s?[a-zA-z]+?$/.test(nameInput);
@@ -139,32 +145,85 @@ const ccNumberValidator = () => {
     return /^\d{13,16}$/.test(ccInput);
 }
 const zipcodeValidator = () => {
-    const zipInput = zipCode.inputMode;
+    const zipInput = zipCode.value;
     return /^\d{5}$/.test(zipInput);
 }
 const cccvvValidator = () => {
     const cvvInput = ccCVV.value;
     return /^\d{3}/.test(cvvInput);
 }
-formElement.addEventListener('submit', (e) => {
+
+//Validator style changer
+const elementValid = (element) => {
+    element.parentNode.classList.add('not-valid');
+    element.parentNode.classList.remove('valid');
+    element.parentNode.lastElementChild.style.display = 'flex';
+}
+const elementInvalid = (element) => {
+    element.parentNode.classList.add('valid');
+    element.parentNode.classList.remove('not-valid');
+    element.parentNode.lastElementChild.style.display = 'none';
+}
+//Real-time Error Validator for email
+formElement.addEventListener('keyup', email => {
+    if(!emailValidator(email)){
+        elementValid(emailField);
+    } else {
+        elementInvalid(emailField)
+    }
+})
+//Submit Event listener
+formElement.addEventListener('submit', e => {
     nameValidator();
     emailValidator();
     activitiesValidator();
     console.log(`Name Validation returns: ${nameValidator()}`);
     console.log(`Email Validation returns: ${emailValidator()}`);
     console.log(`Activities Validation returns: ${activitiesValidator()}`);
-    if (nameValidator() === false || emailValidator() === false || activitiesValidator() === false) {
+    if (!nameValidator() ||
+        !emailValidator() ||
+        !activitiesValidator()) {
+            if(!nameValidator()){
+                elementValid(nameField);
+            } else {
+                elementInvalid(nameField);
+            }
+            if(!emailValidator()){
+                elementValid(emailField);
+            } else {
+                elementInvalid(emailField)
+            }
+            if(!activitiesValidator()){
+                elementValid(document.getElementById('activities-box'));
+            } else {
+                elementInvalid(document.getElementById('activities-box'));
+            }
         e.preventDefault();
     }
-
+    //Only runs if CC Payment Method is selected
     if (paymentMethod[1].selected) {
-        if (ccNumberValidator() === false ||
-        zipcodeValidator() === false ||
-        cccvvValidator() === false) {
-            e.preventDefault();
+        if (!ccNumberValidator() ||
+            !zipcodeValidator() ||
+            !cccvvValidator() ) {
+                if(!ccNumberValidator()){
+                    elementValid(ccNumber);
+                } else {
+                    elementInvalid(ccNumber);
+                }
+                if(!zipcodeValidator()){
+                    elementValid(zipCode);
+                } else {
+                    elementInvalid(zipCode)
+                }
+                if(!cccvvValidator()){
+                    elementValid(ccCVV);
+                } else {
+                    elementInvalid(ccCVV);
+                }
             console.log(`CC Number Validation returns: ${ccNumberValidator()}`);
             console.log(`ZipCode Validation returns: ${zipcodeValidator()}`);
             console.log(`CVV Validation returns: ${cccvvValidator()}`);
+            e.preventDefault();
         } 
     } else {
         console.log(`Payment will be validated next page.`)
