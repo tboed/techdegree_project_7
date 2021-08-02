@@ -77,14 +77,14 @@ registerActivities.addEventListener('change', e => {
     } else {
         totalCost -= dataCost;
     }
-    // for (let i = 0; checkboxes.length; i++) {
-    //     const dataTime = e.target.getAttribute('data-day-and-time');
-    //     if (dataTime === checkboxes[i].getAttribute('data-day-and-time')) {
-    //         checkboxes[i].classList.add('disabled');
-    //     } else {
-    //         checkboxes[i].classList.remove('disabled');
-    //     }
-    // }
+    for (let i = 0; checkboxes.length; i++) {
+        const dataTime = e.target.getAttribute('data-day-and-time');
+        if (dataTime === checkboxes[i].getAttribute('data-day-and-time')) {
+            checkboxes[i].classList.add('disabled');
+        } else {
+            checkboxes[i].classList.remove('disabled');
+        }
+    }
     printedTotal.innerHTML = `Total: $${totalCost}`;
 
 });
