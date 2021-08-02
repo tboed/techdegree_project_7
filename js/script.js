@@ -68,6 +68,21 @@ registerActivities.addEventListener('change', e => {
 });
 
 /**
+ * Add Accessibility to Checkboxes
+ */
+const checkboxes = document.querySelectorAll('input[type="checkbox"');
+for (let i = 0; i < checkboxes.length; i++) {
+    checkboxes[i].addEventListener('focus', e => {
+        const label = e.target.parentNode;
+        label.classList.add('focus');
+    })
+    checkboxes[i].addEventListener('blur', e => {
+        const label = e.target.parentNode;
+        label.classList.remove('focus');
+    })
+}
+
+/**
  * Payment Info Section
  */
 const paymentMethod = document.getElementById('payment');
