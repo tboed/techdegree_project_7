@@ -134,7 +134,11 @@ const nameValidator = () => {
 }
 const emailValidator = () => {
     const emailInput = emailField.value;
+    if (emailInput === '') {
+        return null;
+    } else {
     return /^[^@]+@[^@.]+\.com+$/i.test(emailInput);
+    }
 }
 const activitiesValidator = () => {
     const activitiesPicked = activitiesTotal > 0
@@ -154,22 +158,25 @@ const cccvvValidator = () => {
 }
 
 //Validator style changer
-const elementValid = (element) => {
+const elementInvalid = (element) => {
     element.parentNode.classList.add('not-valid');
     element.parentNode.classList.remove('valid');
     element.parentNode.lastElementChild.style.display = 'flex';
 }
-const elementInvalid = (element) => {
+const elementValid = (element) => {
     element.parentNode.classList.add('valid');
     element.parentNode.classList.remove('not-valid');
     element.parentNode.lastElementChild.style.display = 'none';
 }
 //Real-time Error Validator for email
 formElement.addEventListener('keyup', email => {
-    if(!emailValidator(email)){
-        elementValid(emailField);
+    if (emailValidator(email) === null) {
+        elementInvalid(emailField);
+        emailField.parentNode.lastElementChild.innerHTML = 'Email field cannot be blank';
+    } else if (!emailValidator(email)) {
+        elementInvalid(emailField);
     } else {
-        elementInvalid(emailField)
+        elementValid(emailField)
     }
 })
 //Submit Event listener
@@ -184,19 +191,22 @@ formElement.addEventListener('submit', e => {
         !emailValidator() ||
         !activitiesValidator()) {
             if(!nameValidator()){
-                elementValid(nameField);
-            } else {
                 elementInvalid(nameField);
-            }
-            if(!emailValidator()){
-                elementValid(emailField);
             } else {
-                elementInvalid(emailField)
+                elementValid(nameField);
+            }
+            if (emailValidator() === null) {
+                elementInvalid(emailField);
+                emailField.parentNode.lastElementChild.innerHTML = 'Email field cannot be blank';
+            } else if (!emailValidator()) {
+                elementInvalid(emailField);
+            } else {
+                elementValid(emailField)
             }
             if(!activitiesValidator()){
-                elementValid(document.getElementById('activities-box'));
-            } else {
                 elementInvalid(document.getElementById('activities-box'));
+            } else {
+                elementValid(document.getElementById('activities-box'));
             }
         e.preventDefault();
     }
@@ -206,19 +216,19 @@ formElement.addEventListener('submit', e => {
             !zipcodeValidator() ||
             !cccvvValidator() ) {
                 if(!ccNumberValidator()){
-                    elementValid(ccNumber);
-                } else {
                     elementInvalid(ccNumber);
+                } else {
+                    elementValid(ccNumber);
                 }
                 if(!zipcodeValidator()){
-                    elementValid(zipCode);
+                    elementInvalid(zipCode);
                 } else {
-                    elementInvalid(zipCode)
+                    elementValid(zipCode)
                 }
                 if(!cccvvValidator()){
-                    elementValid(ccCVV);
-                } else {
                     elementInvalid(ccCVV);
+                } else {
+                    elementValid(ccCVV);
                 }
             console.log(`CC Number Validation returns: ${ccNumberValidator()}`);
             console.log(`ZipCode Validation returns: ${zipcodeValidator()}`);
