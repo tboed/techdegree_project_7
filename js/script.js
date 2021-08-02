@@ -2,7 +2,8 @@
  * Name Section
  */
 //Focus on Name Field on load
-const nameField = document.getElementById('name').focus();
+const nameField = document.getElementById('name');
+nameField.focus();
 
 /**
  * Job Role Section
@@ -12,7 +13,7 @@ const otherJobRole = document.getElementById('other-job-role');
 otherJobRole.style.display = 'none';
 //Show other job role when 'Other' is selected and hide if selected included in options
 const titleSelect = document.getElementById('title');
-titleSelect.addEventListener('change', (e) => {
+titleSelect.addEventListener('change', e => {
     if (e.target.value !== 'other') {
         otherJobRole.style.display = 'none';
     } else {
@@ -29,7 +30,7 @@ tshirtColor.disabled = true;
 //Enable specific T-shirt color when Design is selected
 const tshirtDesign = document.getElementById('design');
 const colorOption = document.getElementById('color').children;
-tshirtDesign.addEventListener('change', (e) => {
+tshirtDesign.addEventListener('change', e => {
     tshirtColor.disabled = false;
     for (let i = 1; i < colorOption.length; i++) {
         const chosenDesign = e.target.value;
@@ -49,10 +50,13 @@ tshirtDesign.addEventListener('change', (e) => {
  */
 // Listen for changes in checkboxes and updates total dynamically
 const registerActivities = document.getElementById('activities');
-const printedTotal = document.getElementById('activities-cost')
+const printedTotal = document.getElementById('activities-cost');
 let totalCost = 0;
-registerActivities.addEventListener('change', (e) => {
+let activitiesTotal = 0;
+registerActivities.addEventListener('change', e => {
     const clicked = e.target;
+    (clicked.checked) ? activitiesTotal++ : activitiesTotal--;
+    console.log(activitiesTotal);
     const dataCost = +e.target.getAttribute('data-cost');
     if (clicked.checked) {
         totalCost += dataCost;
@@ -60,6 +64,7 @@ registerActivities.addEventListener('change', (e) => {
         totalCost -= dataCost;
     }
     printedTotal.innerHTML = `Total: $${totalCost}`;
+
 });
 
 /**
@@ -74,7 +79,7 @@ paymentMethod[1].selected = true;
 ppMethod.style.display = 'none';
 bcMethod.style.display = 'none';
 //Hides irrelevant field according to selections
-paymentMethod.addEventListener('change', (e) => {
+paymentMethod.addEventListener('change', e => {
     const methodSelection = e.target.value;
     if (methodSelection === 'credit-card') {
         ccMethod.style.display = '';
@@ -88,5 +93,65 @@ paymentMethod.addEventListener('change', (e) => {
         ccMethod.style.display = 'none';
         ppMethod.style.display = 'none';
         bcMethod.style.display = '';
+    }
+});
+
+/**
+ * Form Validations
+ */
+//  const nameField = document.getElementById('name');
+const emailField = document.getElementById('email');
+// const registerActivities = document.getElementById('activities');
+const ccNumber = document.getElementById('cc-num');
+const zipCode = document.getElementById('zip');
+const ccCVV = document.getElementById('cvv');
+const formElement = document.querySelector('form');
+
+const nameValidator = () => {
+    const nameInput = nameField.value;
+    return /^[a-zA-Z]+\s?[a-zA-z]+?\s?[a-zA-z]+?$/.test(nameInput);
+}
+const emailValidator = () => {
+    const emailInput = emailField.value;
+    return /^[^@]+@[^@.]+\.com+$/i.test(emailInput);
+}
+const activitiesValidator = () => {
+    const activitiesPicked = activitiesTotal > 0
+    return activitiesPicked;
+}
+const ccNumberValidator = () => {
+    const ccInput = ccNumber.value;
+    return /^\d{13,16}$/.test(ccInput);
+}
+const zipcodeValidator = () => {
+    const zipInput = zipCode.inputMode;
+    return /^\d{5}$/.test(zipInput);
+}
+const cccvvValidator = () => {
+    const cvvInput = ccCVV.value;
+    return /^\d{3}/.test(cvvInput);
+}
+formElement.addEventListener('submit', (e) => {
+    nameValidator();
+    emailValidator();
+    activitiesValidator();
+    console.log(`Name Validation returns: ${nameValidator()}`);
+    console.log(`Email Validation returns: ${emailValidator()}`);
+    console.log(`Activities Validation returns: ${activitiesValidator()}`);
+    if (nameValidator() === false || emailValidator() === false || activitiesValidator() === false) {
+        e.preventDefault();
+    }
+
+    if (paymentMethod[1].selected) {
+        if (ccNumberValidator() === false ||
+        zipcodeValidator() === false ||
+        cccvvValidator() === false) {
+            e.preventDefault();
+            console.log(`CC Number Validation returns: ${ccNumberValidator()}`);
+            console.log(`ZipCode Validation returns: ${zipcodeValidator()}`);
+            console.log(`CVV Validation returns: ${cccvvValidator()}`);
+        } 
+    } else {
+        console.log(`Payment will be validated next page.`)
     }
 });
