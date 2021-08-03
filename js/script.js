@@ -77,15 +77,18 @@ registerActivities.addEventListener('change', e => {
     } else {
         totalCost -= dataCost;
     }
-    for (let i = 0; checkboxes.length; i++) {
-        const dataTime = e.target.getAttribute('data-day-and-time');
-        if (dataTime === checkboxes[i].getAttribute('data-day-and-time')) {
-            checkboxes[i].classList.add('disabled');
-        } else {
-            checkboxes[i].classList.remove('disabled');
+    printedTotal.innerHTML = `Total: $${totalCost}`;
+    for (let i = 1; i < checkboxes.length; i++) {
+        if (clicked.getAttribute('data-day-and-time') === checkboxes[i].getAttribute('data-day-and-time')) {
+            checkboxes[i].disabled = true;
+            checkboxes[i].parentNode.classList.add('disabled');
+        } 
+        else {
+            checkboxes[i].disabled = false;
+            checkboxes[i].parentNode.classList.remove('disabled');
         }
     }
-    printedTotal.innerHTML = `Total: $${totalCost}`;
+
 
 });
 
