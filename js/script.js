@@ -82,14 +82,11 @@ registerActivities.addEventListener('change', e => {
         if (clicked.getAttribute('data-day-and-time') === checkboxes[i].getAttribute('data-day-and-time')) {
             checkboxes[i].disabled = true;
             checkboxes[i].parentNode.classList.add('disabled');
-        } 
-        else {
+        } else {
             checkboxes[i].disabled = false;
             checkboxes[i].parentNode.classList.remove('disabled');
         }
     }
-
-
 });
 
 /**
@@ -178,6 +175,7 @@ formElement.addEventListener('keyup', email => {
         emailField.parentNode.lastElementChild.innerHTML = 'Email field cannot be blank';
     } else if (!emailValidator(email)) {
         elementInvalid(emailField);
+        emailField.parentNode.lastElementChild.innerHTML = 'Email address must be formatted correctly'
     } else {
         elementValid(emailField)
     }
