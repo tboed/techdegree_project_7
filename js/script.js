@@ -70,23 +70,29 @@ let activitiesTotal = 0;
 registerActivities.addEventListener('change', e => {
     const clicked = e.target;
     (clicked.checked) ? activitiesTotal++ : activitiesTotal--;
-    console.log(activitiesTotal);
     const dataCost = +e.target.getAttribute('data-cost');
     if (clicked.checked) {
         totalCost += dataCost;
-    } else {
-        totalCost -= dataCost;
+        for (let i = 1; i < checkboxes.length; i++) {
+            if (clicked.getAttribute('data-day-and-time') === checkboxes[i].getAttribute('data-day-and-time')) {
+                checkboxes[i].disabled = true;
+                checkboxes[i].parentNode.classList.add('disabled');
+            }
+
+        }
+        clicked.parentNode.classList.remove('disabled');
+        clicked.disabled = false;
     }
-    printedTotal.innerHTML = `Total: $${totalCost}`;
-    for (let i = 1; i < checkboxes.length; i++) {
-        if (clicked.getAttribute('data-day-and-time') === checkboxes[i].getAttribute('data-day-and-time')) {
-            checkboxes[i].disabled = true;
-            checkboxes[i].parentNode.classList.add('disabled');
-        } else {
-            checkboxes[i].disabled = false;
-            checkboxes[i].parentNode.classList.remove('disabled');
+    if (!clicked.checked) {
+        totalCost -= dataCost;
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (clicked.getAttribute('data-day-and-time') === checkboxes[i].getAttribute('data-day-and-time')) {
+                checkboxes[i].disabled = false;
+                checkboxes[i].parentNode.classList.remove('disabled');
+            }
         }
     }
+    printedTotal.innerHTML = `Total: $${totalCost}`;
 });
 
 /**
